@@ -14,5 +14,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.rollButton.text = "Let's roll"
+        binding.tvHello.text = "Lazy day!"
     }
 }
