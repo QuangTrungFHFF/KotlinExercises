@@ -25,13 +25,11 @@
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_marginStart="@dimen/margin_wide"
-        android:layout_marginBottom="@dimen/margin_half"
         android:layout_marginTop="16dp"
         android:text="@string/box_two"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/box_one_text"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/box_one_text" />
 
     <TextView
         android:id="@+id/box_three_text"
@@ -75,5 +73,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/box_two_text"
         app:layout_constraintTop_toBottomOf="@+id/box_four_text" />
+
+    <TextView
+        android:id="@+id/tv_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="How to play:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/box_two_text"
+        app:layout_constraintVertical_bias="0.034" />
+
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Click anything to color it"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_label"
+        app:layout_constraintStart_toEndOf="@+id/tv_label" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
