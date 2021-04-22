@@ -21,6 +21,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+                <fragment
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/fm_title"
+                    android:name="com.example.android.navigation.TitleFragment"/>
         </LinearLayout>
 
 </layout>
