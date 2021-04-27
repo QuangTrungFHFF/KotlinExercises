@@ -37,7 +37,7 @@ class GameWonFragment : Fragment() {
 
         binding.nextMatchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_gameWonFragment_to_gameFragment))
 
-        var args = GameWonFragmentArgs.fromBundle(arguments!!)
+        var args = GameWonFragmentArgs.fromBundle(requireArguments())
 
         Toast.makeText(context, "NumCorrect: ${args.numCorrect}, NumQuestions: ${args.numQuestions}", Toast.LENGTH_LONG).show()
 
@@ -56,7 +56,7 @@ class GameWonFragment : Fragment() {
     }
 
     private fun getSharedIntent() : Intent{
-        var args = GameWonFragmentArgs.fromBundle(arguments!!)
+        var args = GameWonFragmentArgs.fromBundle(requireArguments())
         var sharedIntent = Intent(Intent.ACTION_SEND)
         sharedIntent.type = "text/plain"
         sharedIntent.putExtra(Intent.EXTRA_TEXT,getString(R.string.share_success_text, args.numCorrect,args.numQuestions))
