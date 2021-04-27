@@ -39,16 +39,23 @@ class MainActivity : AppCompatActivity() {
         val navController = this.findNavController(R.id.fm_navigation)
         NavigationUI.setupActionBarWithNavController(this,navController,drawerLayout)
         NavigationUI.setupWithNavController(binding.navView,navController)
+        navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestination, _: Bundle? ->
+            if(nd.id == nc.graph.startDestination){
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            }else{
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
+        }
 
     }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.fm_navigation)
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+        return if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START)
-            return true;
+            true;
         }else{
-            return NavigationUI.navigateUp(navController,drawerLayout)
+            NavigationUI.navigateUp(navController,drawerLayout)
         }
 
     }
