@@ -56,6 +56,7 @@ class CheckoutActivity : AppCompatActivity() {
         val weakActivity = WeakReference<Activity>(this)
         // Create a PaymentIntent by calling your server's endpoint.
         val mediaType = "application/json; charset=utf-8".toMediaType()
+        val jsonString : String = getJsonString()
         val requestJson = """
       {
           "currency":"usd",
@@ -109,6 +110,16 @@ class CheckoutActivity : AppCompatActivity() {
                 stripe.confirmPayment(this, confirmParams)
             }
         }
+    }
+
+    private fun getJsonString(): String {
+        val payMap = mutableMapOf<String,Any>()
+        val itemMap = mutableMapOf<String,Any>()
+        val itemList = mutableListOf<MutableMap<String,Any>>()
+        payMap.put("currency", "usd")
+        itemMap.put("id", "M0001")
+        itemMap.put("price", 20)
+        itemList.add(itemMap)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
