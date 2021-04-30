@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.PaymentIntentResult
@@ -19,11 +20,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.ref.WeakReference
+import java.util.concurrent.TimeUnit
 
 class CheckoutActivity : AppCompatActivity() {
     // 10.0.2.2 is the Android emulator's alias to localhost
     private val backendUrl = "https://nameless-fortress-13129.herokuapp.com/"
-    private val httpClient = OkHttpClient()
+    private var httpClient = OkHttpClient()
     private lateinit var paymentIntentClientSecret: String
     private lateinit var stripe: Stripe
 
@@ -32,7 +34,11 @@ class CheckoutActivity : AppCompatActivity() {
         setContentView(R.layout.activity_checkout)
         // Configure the SDK with your Stripe publishable key so it can make requests to Stripe
         stripe = Stripe(applicationContext, "pk_test_51IhAu2EYP2XsA89m5vqvoeyFVniVcI881wi53n8QdChng5nBUd9tDstbVE0GV103PZs2pRU7PKYpQ3YAWzxcnVy300OG92K2eN")
-
+        httpClient = OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build()
         startCheckout()
     }
 
@@ -57,15 +63,8 @@ class CheckoutActivity : AppCompatActivity() {
         // Create a PaymentIntent by calling your server's endpoint.
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val jsonString : String = getJsonString()
-        val requestJson = """
-      {
-          "currency":"usd",
-          "items": [
-              {"id":"xl-tshirt"}
-          ]
-      }
-      """
-        val body = requestJson.toRequestBody(mediaType)
+        
+        val body = jsonString.toRequestBody(mediaType)
         val request = Request.Builder()
             .url(backendUrl + "create-payment-intent")
             .post(body)
@@ -74,7 +73,7 @@ class CheckoutActivity : AppCompatActivity() {
             .enqueue(object: Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     weakActivity.get()?.let { activity ->
-                        displayAlert(activity, "Failed to load page", "Error: $e")
+                        displayAlert(activity, "Failed to load page 1", "Error: $e")
                     }
                 }
 
@@ -83,7 +82,7 @@ class CheckoutActivity : AppCompatActivity() {
                         weakActivity.get()?.let { activity ->
                             displayAlert(
                                 activity,
-                                "Failed to load page",
+                                "Failed to load page 2",
                                 "Error: $response"
                             )
                         }
@@ -116,10 +115,13 @@ class CheckoutActivity : AppCompatActivity() {
         val payMap = mutableMapOf<String,Any>()
         val itemMap = mutableMapOf<String,Any>()
         val itemList = mutableListOf<MutableMap<String,Any>>()
-        payMap.put("currency", "usd")
-        itemMap.put("id", "M0001")
-        itemMap.put("price", 20)
+        payMap["currency"] = "usd"
+        itemMap["id"] = "M0001"
+        itemMap["price"] = 2000
         itemList.add(itemMap)
+        payMap["items"] = itemList
+        val gson = Gson()
+        return gson.toJson(payMap)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
