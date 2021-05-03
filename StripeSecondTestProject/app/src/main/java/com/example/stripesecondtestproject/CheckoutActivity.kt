@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -24,6 +25,7 @@ import com.stripe.android.Stripe
 import com.stripe.android.model.ConfirmPaymentIntentParams
 import com.stripe.android.model.StripeIntent
 import com.stripe.android.view.CardInputWidget
+import java.util.concurrent.TimeUnit
 
 
 class CheckoutActivity : AppCompatActivity() {
@@ -34,8 +36,8 @@ class CheckoutActivity : AppCompatActivity() {
      * To run this app, follow the steps here: https://github.com/stripe-samples/accept-a-card-payment#how-to-run-locally
      */
     // 10.0.2.2 is the Android emulator's alias to localhost
-    private val backendUrl = "http://10.0.2.2:4242/"
-    private val httpClient = OkHttpClient()
+    private val backendUrl = "https://nameless-fortress-13129.herokuapp.com/"
+    private var httpClient = OkHttpClient()
     private lateinit var publishableKey: String
     private lateinit var paymentIntentClientSecret: String
     private lateinit var stripe: Stripe
@@ -43,6 +45,8 @@ class CheckoutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_checkout)
+        stripe = Stripe(applicationContext, "pk_test_51IhAu2EYP2XsA89m5vqvoeyFVniVcI881wi53n8QdChng5nBUd9tDstbVE0GV103PZs2pRU7PKYpQ3YAWzxcnVy300OG92K2eN")
+
         startCheckout()
     }
 
@@ -74,15 +78,8 @@ class CheckoutActivity : AppCompatActivity() {
         val weakActivity = WeakReference<Activity>(this)
         // Create a PaymentIntent by calling the sample server's /create-payment-intent endpoint.
         val mediaType = "application/json; charset=utf-8".toMediaType()
-        val json = """
-            {
-                "currency":"usd",
-                "items": [
-                    {"id":"photo_subscription"}
-                ]
-            }
-            """
-        val body = json.toRequestBody(mediaType)
+        val jsonString : String = getJsonString()
+        val body = jsonString.toRequestBody(mediaType)
         val request = Request.Builder()
             .url(backendUrl + "create-payment-intent")
             .post(body)
@@ -103,11 +100,11 @@ class CheckoutActivity : AppCompatActivity() {
                         // The response from the server includes the Stripe publishable key and
                         // PaymentIntent details.
                         // For added security, our sample app gets the publishable key from the server
-                        publishableKey = json.getString("publishableKey")
+                        //publishableKey = json.getString("publishableKey")
                         paymentIntentClientSecret = json.getString("clientSecret")
 
                         // Configure the SDK with your Stripe publishable key so that it can make requests to the Stripe API
-                        stripe = Stripe(applicationContext, publishableKey)
+                        //stripe = Stripe(applicationContext, publishableKey)
                     }
                 }
             })
@@ -125,6 +122,19 @@ class CheckoutActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun getJsonString(): String {
+        val payMap = mutableMapOf<String,Any>()
+        val itemMap = mutableMapOf<String,Any>()
+        val itemList = mutableListOf<MutableMap<String,Any>>()
+        payMap["currency"] = "usd"
+        itemMap["id"] = "M0001"
+        itemMap["price"] = 2000
+        itemList.add(itemMap)
+        payMap["items"] = itemList
+        val gson = Gson()
+        return gson.toJson(payMap)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
