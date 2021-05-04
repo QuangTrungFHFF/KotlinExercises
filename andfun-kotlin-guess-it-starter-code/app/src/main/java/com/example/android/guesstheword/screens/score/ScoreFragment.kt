@@ -65,7 +65,7 @@ class ScoreFragment : Fragment() {
 
 
         binding.playAgainButton.setOnClickListener { viewModel.onPlayAgain() }
-        
+
         viewModel.eventPlayAgain.observe(viewLifecycleOwner, Observer { eventPlayAgain ->
             if (eventPlayAgain){
                 findNavController().navigate(ScoreFragmentDirections.actionRestart())
