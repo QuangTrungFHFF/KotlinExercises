@@ -81,17 +81,16 @@ class GameFragment : Fragment() {
             }
         })
 
-        viewModel.currentTime.observe(viewLifecycleOwner, Observer { currentTime ->
-            updateTimer(currentTime?:0)
+        viewModel.currentTimeString.observe(viewLifecycleOwner, Observer { currentTimeString ->
+            updateTimer(currentTimeString)
         })
 
         return binding.root
 
     }
 
-    private fun updateTimer(currentTime: Long) {
-        val time = DateUtils.formatElapsedTime(currentTime)
-        binding.timerText.text = time
+    private fun updateTimer(currentTime: String) {
+        binding.timerText.text = currentTime
     }
 
 
