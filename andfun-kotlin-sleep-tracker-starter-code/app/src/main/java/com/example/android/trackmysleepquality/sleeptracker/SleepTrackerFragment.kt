@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.database.SleepDatabase
@@ -54,6 +55,21 @@ class SleepTrackerFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
+        binding.startButton.setOnClickListener {
+            sleepTrackerViewModel.onStartTracking()
+        }
+
+        binding.stopButton.setOnClickListener {
+            sleepTrackerViewModel.onStopTracking()
+        }
+
+        binding.clearButton.setOnClickListener {
+            sleepTrackerViewModel.onClear()
+        }
+
+        sleepTrackerViewModel.nightsString.observe(viewLifecycleOwner, Observer { nightsString ->
+            binding.textview.text = nightsString
+        })
         return binding.root
     }
 }
