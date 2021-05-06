@@ -48,6 +48,7 @@ class SleepQualityViewModel(
     fun onSetSleepQuality(quality : Int){
         uiScope.launch {
             setSleepQuality(quality)
+            _navigationToSleepTracker.value = true
         }
     }
 

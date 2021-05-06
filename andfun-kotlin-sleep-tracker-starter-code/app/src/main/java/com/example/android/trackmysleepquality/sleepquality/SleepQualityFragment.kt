@@ -65,7 +65,25 @@ class SleepQualityFragment : Fragment() {
             }
         })
 
+        val clickListener : View.OnClickListener = View.OnClickListener {
+            val quality : Int = when(it){
+                binding.qualityZeroImage -> 0
+                binding.qualityOneImage -> 1
+                binding.qualityTwoImage -> 2
+                binding.qualityThreeImage -> 3
+                binding.qualityFourImage -> 4
+                binding.qualityFiveImage -> 5
+                else -> -1
+            }
+            sleepQualityViewModel.onSetSleepQuality(quality)
+        }
 
+        binding.qualityZeroImage.setOnClickListener(clickListener)
+        binding.qualityOneImage.setOnClickListener(clickListener)
+        binding.qualityTwoImage.setOnClickListener(clickListener)
+        binding.qualityThreeImage.setOnClickListener(clickListener)
+        binding.qualityFourImage.setOnClickListener(clickListener)
+        binding.qualityFiveImage.setOnClickListener(clickListener)
 
         return binding.root
     }
