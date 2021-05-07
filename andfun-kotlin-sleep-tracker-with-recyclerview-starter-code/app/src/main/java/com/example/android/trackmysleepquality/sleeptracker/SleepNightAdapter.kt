@@ -27,6 +27,7 @@ import com.example.android.trackmysleepquality.convertDurationToFormatted
 import com.example.android.trackmysleepquality.convertNumericQualityToString
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.databinding.ListItemSleepNightBinding
+import com.example.android.trackmysleepquality.databinding.ListItemSleepNightGridBinding
 
 class SleepNightAdapter : ListAdapter<SleepNight,SleepNightAdapter.ViewHolder>(SleepNightDiffCallback()){
 
@@ -40,12 +41,11 @@ class SleepNightAdapter : ListAdapter<SleepNight,SleepNightAdapter.ViewHolder>(S
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ListItemSleepNightBinding) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder private constructor(private val binding: ListItemSleepNightGridBinding) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(item: SleepNight) {
             val res: Resources = itemView.resources
             binding.tvSleepQuality.text = convertNumericQualityToString(item.sleepQuality, res)
-            binding.tvSleepLength.text = convertDurationToFormatted(item.startTimeMilli, item.endTimeMilli, res)
             binding.ivSleepQuality.setImageResource(when (item.sleepQuality) {
                 0 -> R.drawable.ic_sleep_0
                 1 -> R.drawable.ic_sleep_1
@@ -60,7 +60,7 @@ class SleepNightAdapter : ListAdapter<SleepNight,SleepNightAdapter.ViewHolder>(S
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemSleepNightBinding.inflate(layoutInflater,parent,false)
+                val binding = ListItemSleepNightGridBinding.inflate(layoutInflater,parent,false)
                 return ViewHolder(binding)
             }
         }
