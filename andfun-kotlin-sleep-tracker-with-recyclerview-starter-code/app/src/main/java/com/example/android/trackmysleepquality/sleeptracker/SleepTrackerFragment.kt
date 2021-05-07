@@ -39,6 +39,8 @@ import com.google.android.material.snackbar.Snackbar
  */
 class SleepTrackerFragment : Fragment(), SleepNightAdapter.OnItemClickListener {
 
+    private lateinit var sleepTrackerViewModel: SleepTrackerViewModel
+
     /**
      * Called when the Fragment is ready to display content to the screen.
      *
@@ -57,7 +59,7 @@ class SleepTrackerFragment : Fragment(), SleepNightAdapter.OnItemClickListener {
 
         val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
 
-        val sleepTrackerViewModel =
+        sleepTrackerViewModel =
                 ViewModelProvider(
                         this, viewModelFactory).get(SleepTrackerViewModel::class.java)
 
@@ -99,6 +101,7 @@ class SleepTrackerFragment : Fragment(), SleepNightAdapter.OnItemClickListener {
             }
         })
 
+
         val layoutManager = GridLayoutManager(activity,3)
         val adapter = SleepNightAdapter(this)
         binding.sleepList.adapter = adapter
@@ -110,10 +113,17 @@ class SleepTrackerFragment : Fragment(), SleepNightAdapter.OnItemClickListener {
             }
         })
 
+        sleepTrackerViewModel.navigateToSleepDataQuality.observe(viewLifecycleOwner, Observer {night ->
+            night?.let {
+                this.findNavController().navigate(SleepTrackerFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(night))
+                sleepTrackerViewModel.onSleepDataQualityNavigated()
+            }
+        })
+
         return binding.root
     }
 
-    override fun onItemCLick(position: Int) {
-        Toast.makeText(context, "Position: $position", Toast.LENGTH_SHORT).show()
+    override fun onItemCLick(position: Int, nightId: Long) {
+        sleepTrackerViewModel.onSleepNightClicked(nightId)
     }
 }

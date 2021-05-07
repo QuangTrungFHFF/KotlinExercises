@@ -26,6 +26,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.android.trackmysleepquality.R
+import com.example.android.trackmysleepquality.convertDurationToFormatted
+import com.example.android.trackmysleepquality.convertNumericQualityToString
 import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.databinding.FragmentSleepDetailBinding
 
@@ -74,6 +76,23 @@ class SleepDetailFragment : Fragment() {
                 // Reset state to make sure we only navigate once, even if the device
                 // has a configuration change.
                 sleepDetailViewModel.doneNavigating()
+            }
+        })
+
+        sleepDetailViewModel.sleepNight.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                binding.qualityImage.setImageResource(when (it.sleepQuality) {
+                    0 -> R.drawable.ic_sleep_0
+                    1 -> R.drawable.ic_sleep_1
+                    2 -> R.drawable.ic_sleep_2
+                    3 -> R.drawable.ic_sleep_3
+                    4 -> R.drawable.ic_sleep_4
+                    5 -> R.drawable.ic_sleep_5
+                    else -> R.drawable.ic_sleep_active
+                })
+
+                binding.qualityString.text = convertNumericQualityToString(it.sleepQuality, resources)
+                binding.sleepLength.text = convertDurationToFormatted(it.startTimeMilli,it.endTimeMilli,resources)
             }
         })
 

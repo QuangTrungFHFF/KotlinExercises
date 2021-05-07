@@ -45,8 +45,10 @@ class SleepNightAdapter(private val listener: OnItemClickListener) : ListAdapter
 
     class ViewHolder private constructor(private val binding: ListItemSleepNightGridBinding, private val listener: OnItemClickListener) : RecyclerView.ViewHolder(binding.root),
     View.OnClickListener{
+       private var itemNightId : Long = -1
 
         fun bind(item: SleepNight) {
+            itemNightId = item.nightId
             val res: Resources = itemView.resources
             binding.tvSleepQuality.text = convertNumericQualityToString(item.sleepQuality, res)
             binding.ivSleepQuality.setImageResource(when (item.sleepQuality) {
@@ -75,14 +77,14 @@ class SleepNightAdapter(private val listener: OnItemClickListener) : ListAdapter
         override fun onClick(v: View?) {
             val position : Int = adapterPosition
             if(position != RecyclerView.NO_POSITION){
-                listener.onItemCLick(position)
+                listener.onItemCLick(position,itemNightId)
             }
 
         }
     }
 
     interface OnItemClickListener{
-        fun onItemCLick(position: Int)
+        fun onItemCLick(position: Int, nightId : Long)
     }
 
     class SleepNightDiffCallback : DiffUtil.ItemCallback<SleepNight>(){
