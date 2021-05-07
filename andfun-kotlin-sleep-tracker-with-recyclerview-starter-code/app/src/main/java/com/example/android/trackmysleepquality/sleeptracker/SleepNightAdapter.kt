@@ -18,6 +18,7 @@ package com.example.android.trackmysleepquality.sleeptracker
 
 import android.content.res.Resources
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -28,8 +29,9 @@ import com.example.android.trackmysleepquality.convertNumericQualityToString
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.databinding.ListItemSleepNightBinding
 import com.example.android.trackmysleepquality.databinding.ListItemSleepNightGridBinding
+import com.example.android.trackmysleepquality.generated.callback.OnClickListener
 
-class SleepNightAdapter : ListAdapter<SleepNight,SleepNightAdapter.ViewHolder>(SleepNightDiffCallback()){
+class SleepNightAdapter(private val listener: OnItemClickListener) : ListAdapter<SleepNight,SleepNightAdapter.ViewHolder>(SleepNightDiffCallback()){
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -38,10 +40,11 @@ class SleepNightAdapter : ListAdapter<SleepNight,SleepNightAdapter.ViewHolder>(S
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+        return ViewHolder.from(parent,listener)
     }
 
-    class ViewHolder private constructor(private val binding: ListItemSleepNightGridBinding) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder private constructor(private val binding: ListItemSleepNightGridBinding, private val listener: OnItemClickListener) : RecyclerView.ViewHolder(binding.root),
+    View.OnClickListener{
 
         fun bind(item: SleepNight) {
             val res: Resources = itemView.resources
@@ -58,13 +61,28 @@ class SleepNightAdapter : ListAdapter<SleepNight,SleepNightAdapter.ViewHolder>(S
         }
 
         companion object {
-            fun from(parent: ViewGroup): ViewHolder {
+            fun from(parent: ViewGroup, listener: OnItemClickListener): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemSleepNightGridBinding.inflate(layoutInflater,parent,false)
-                return ViewHolder(binding)
+                return ViewHolder(binding,listener)
             }
         }
 
+        init {
+            binding.root.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            val position : Int = adapterPosition
+            if(position != RecyclerView.NO_POSITION){
+                listener.onItemCLick(position)
+            }
+
+        }
+    }
+
+    interface OnItemClickListener{
+        fun onItemCLick(position: Int)
     }
 
     class SleepNightDiffCallback : DiffUtil.ItemCallback<SleepNight>(){
@@ -76,6 +94,10 @@ class SleepNightAdapter : ListAdapter<SleepNight,SleepNightAdapter.ViewHolder>(S
             return  oldItem == newItem
         }
 
+    }
+
+    class SleepNightListener(val clickListener: (sleepId : Long) -> Unit){
+        fun onClick(night : SleepNight) = clickListener(night.nightId)
     }
 
 

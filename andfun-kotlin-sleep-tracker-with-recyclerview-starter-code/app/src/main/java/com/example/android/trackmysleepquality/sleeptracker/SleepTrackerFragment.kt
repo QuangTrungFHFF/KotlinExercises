@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -36,7 +37,7 @@ import com.google.android.material.snackbar.Snackbar
  * a database. Cumulative data is displayed in a simple scrollable TextView.
  * (Because we have not learned about RecyclerView yet.)
  */
-class SleepTrackerFragment : Fragment() {
+class SleepTrackerFragment : Fragment(), SleepNightAdapter.OnItemClickListener {
 
     /**
      * Called when the Fragment is ready to display content to the screen.
@@ -99,7 +100,7 @@ class SleepTrackerFragment : Fragment() {
         })
 
         val layoutManager = GridLayoutManager(activity,3)
-        val adapter = SleepNightAdapter()
+        val adapter = SleepNightAdapter(this)
         binding.sleepList.adapter = adapter
         binding.sleepList.layoutManager = layoutManager
 
@@ -110,5 +111,9 @@ class SleepTrackerFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onItemCLick(position: Int) {
+        Toast.makeText(context, "Position: $position", Toast.LENGTH_SHORT).show()
     }
 }
