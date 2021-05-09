@@ -18,12 +18,16 @@
 package com.example.android.marsrealestate.overview
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.android.marsrealestate.R
 import com.example.android.marsrealestate.databinding.FragmentOverviewBinding
+import com.example.android.marsrealestate.databinding.GridViewItemBinding
 
 /**
  * This fragment shows the the status of the Mars real-estate web services transaction.
@@ -43,18 +47,22 @@ class OverviewFragment : Fragment() {
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = FragmentOverviewBinding.inflate(inflater)
+        val binding = GridViewItemBinding.inflate(inflater)
 
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
         binding.lifecycleOwner = this
 
         // Giving the binding access to the OverviewViewModel
-        binding.viewModel = viewModel
+//        binding.viewModel = viewModel
 
         setHasOptionsMenu(true)
 
         viewModel.property.observe(viewLifecycleOwner, Observer { marsProp ->
-            binding.tvDetail.text = marsProp.imgSrcUrl
+            Log.i("HERE", marsProp.imgSrcUrl)
+            Glide.with(requireContext())
+                    .load(marsProp.imgSrcUrl)
+                    //.load("https://goo.gl/gEgYUd")
+                    .into(binding.marsImage)
         })
         return binding.root
     }
