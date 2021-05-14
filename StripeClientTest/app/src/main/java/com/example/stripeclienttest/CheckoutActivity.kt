@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 class CheckoutActivity : AppCompatActivity() {
     // 10.0.2.2 is the Android emulator's alias to localhost
-    private val backendUrl = "https://nameless-fortress-13129.herokuapp.com/"
+    private val backendUrl = "https://whispering-river-24738.herokuapp.com/"
     private var httpClient = OkHttpClient()
     private lateinit var paymentIntentClientSecret: String
     private lateinit var stripe: Stripe
