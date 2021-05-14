@@ -56,13 +56,13 @@ class OverviewFragment : Fragment() {
 //        binding.viewModel = viewModel
 
         setHasOptionsMenu(true)
+        val adapter = PhotoGridAdapter()
+        binding.rvDetail.adapter = adapter
 
-        viewModel.property.observe(viewLifecycleOwner, Observer { marsProp ->
-            Log.i("HERE", marsProp.imgSrcUrl)
-            Glide.with(requireContext())
-                    .load(marsProp.imgSrcUrl)
-                    //.load("https://goo.gl/gEgYUd")
-                    .into(binding.marsImage)
+        viewModel.property.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                adapter.submitList(it)
+            }
         })
         return binding.root
     }
