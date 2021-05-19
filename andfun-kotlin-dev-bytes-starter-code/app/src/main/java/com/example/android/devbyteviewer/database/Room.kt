@@ -17,17 +17,16 @@
 
 package com.example.android.devbyteviewer.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.lifecycle.LiveData
+import androidx.room.*
 
 @Dao
 interface VideoDao{
 
     @Query(value = "SELECT * FROM database_video_table")
-    fun getAllVideos() : List<DatabaseVideo>
+    fun getAllVideos() : LiveData<List<DatabaseVideo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg videos: DatabaseVideo) : Int
+    fun insertAll(vararg videos: DatabaseVideo)
 }
+
