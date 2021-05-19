@@ -37,6 +37,11 @@ enum class MarsApiStatus { LOADING, ERROR, DONE }
  */
 class OverviewViewModel : ViewModel() {
 
+
+    private val _navigateToDetail = MutableLiveData<MarsProperty>()
+    val navigateToDetail : LiveData<MarsProperty>
+        get() = _navigateToDetail
+
     // The internal MutableLiveData String that stores the status of the most recent request
     private val _status = MutableLiveData<MarsApiStatus>()
 
@@ -71,5 +76,13 @@ class OverviewViewModel : ViewModel() {
                 _property.value = ArrayList()
             }
         }
+    }
+
+    fun displayItemDetail(marsProperty: MarsProperty){
+        _navigateToDetail.value = marsProperty
+    }
+
+    fun completeNavigateToDetail(){
+        _navigateToDetail.value = null
     }
 }
