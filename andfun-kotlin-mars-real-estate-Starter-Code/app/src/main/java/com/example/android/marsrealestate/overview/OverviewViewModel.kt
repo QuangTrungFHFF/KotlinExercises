@@ -18,10 +18,7 @@
 package com.example.android.marsrealestate.overview
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.android.marsrealestate.network.MarsApi
 import com.example.android.marsrealestate.network.MarsProperty
 import kotlinx.coroutines.launch
@@ -52,6 +49,9 @@ class OverviewViewModel : ViewModel() {
     private val _property = MutableLiveData<List<MarsProperty>>()
     val property : LiveData<List<MarsProperty>>
             get() = _property
+
+
+
     /**
      * Call getMarsRealEstateProperties() on init so we can display status immediately.
      */

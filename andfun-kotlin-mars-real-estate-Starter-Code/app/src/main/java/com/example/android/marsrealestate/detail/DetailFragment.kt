@@ -21,8 +21,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.android.marsrealestate.R
 import com.example.android.marsrealestate.databinding.FragmentDetailBinding
+import com.example.android.marsrealestate.util.load
 
 /**
  * This [Fragment] will show the detailed information about a selected piece of Mars real estate.
@@ -41,7 +44,15 @@ class DetailFragment : Fragment() {
         val factory = DetailViewModelFactory(marsProperty,application)
         val viewModel = ViewModelProvider(this,factory).get(DetailViewModel::class.java)
 
+        viewModel.displayPropertyType.observe(viewLifecycleOwner, Observer {
+            binding.propertyTypeText.text = it
+        })
 
+        viewModel.displayPropertyPrice.observe(viewLifecycleOwner, Observer {
+            binding.priceValueText.text = it
+        })
+
+        binding.mainPhotoImage.load(marsProperty.imgSrcUrl)
         return binding.root
     }
 }
