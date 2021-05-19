@@ -64,6 +64,27 @@ class OverviewFragment : Fragment() {
                 adapter.submitList(it)
             }
         })
+
+        viewModel.status.observe(viewLifecycleOwner, Observer { status ->
+            when(status){
+                MarsApiStatus.LOADING -> {
+                    binding.ivStatus.setImageResource(R.drawable.loading_animation)
+                    binding.ivStatus.visibility = View.VISIBLE
+                }
+                MarsApiStatus.DONE -> {
+                    binding.ivStatus.visibility = View.INVISIBLE
+                }
+                MarsApiStatus.ERROR ->{
+                    binding.ivStatus.setImageResource(R.drawable.ic_connection_error)
+                    binding.ivStatus.visibility = View.VISIBLE
+                }
+                else -> {
+                    binding.ivStatus.setImageResource(R.drawable.ic_broken_image)
+                    binding.ivStatus.visibility = View.VISIBLE
+                    binding.rvDetail.visibility = View.INVISIBLE
+                }
+            }
+        })
         return binding.root
     }
 
