@@ -18,6 +18,11 @@
 package com.example.android.devbyteviewer.viewmodels
 
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkInfo
+import android.os.Build
 import androidx.lifecycle.*
 import com.example.android.devbyteviewer.database.VideoDatabase.Companion.getInstance
 import com.example.android.devbyteviewer.domain.Video
@@ -48,11 +53,35 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
     val playlist = videosRepository.videos
 
     init {
-        viewModelScope.launch {
-            videosRepository.refreshVideos()
+        if(isConnected(application)){
+            viewModelScope.launch {
+                videosRepository.refreshVideos()
+            }
         }
+
     }
 
+
+
+    private fun isConnected(application: Application) : Boolean{
+
+        val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nw      = cm.activeNetwork?: return false
+            val actNw = cm.getNetworkCapabilities(nw)?: return false
+            return when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                //for other device how are able to connect with Ethernet
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                //for check internet over Bluetooth
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+                else -> false
+            }
+        } else {
+            return cm.activeNetworkInfo?.isConnected ?: false
+        }
+    }
     /**
      * Factory for constructing DevByteViewModel with parameter
      */
@@ -65,4 +94,7 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
+
+
+
 }
